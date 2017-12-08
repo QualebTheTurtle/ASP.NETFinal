@@ -63,7 +63,7 @@ MVC in Visual studio comes with alot of pre-built view's. Including login featur
 
 Were going to make the website look like this in the next section.
 
-![alt text][img10]
+![alt text][img11]
 
 ### Changing the Home Page Content in MVC
 > In MVC a view is created from a multitude of veiws or partial views. The view we edited previously is a partial view that all pages of the website share unless otherwize specified. Lets break that veiw down to better understand before we move on. At the top of the veiw there are normal HTML tags, going on we see an @ symbol. The @ denotes the usage of csharp. The first instance of an @ symbol that we see is on line 6
@@ -76,8 +76,12 @@ Were going to make the website look like this in the next section.
 > ```csharp
 > @RenderBody()
 > ```
->RenderBody function is a helper function that is implemented in MVC it is where the partial veiws to be passedin will be placed.
->Now that we understand the Shared partial veiw lets edit the body of the HomePage. To do this navigate to Views, Home, and opent the Index.cshtml file. This is the partial view that is output by the @RenderBody() function when we navigate to our localhost, or Localhost/home. Before we break the code down make it look like this
+> RenderBody function is a helper function that is implemented in MVC it is where the partial veiws to be passedin will be placed.
+> Now that we understand the Shared partial veiw lets edit the body of the HomePage. To do this navigate to Views, Home, and opent the Index.cshtml file. 
+> 
+> ![alt text][img10]
+> 
+> This is the partial view that is output by the @RenderBody() function when we navigate to our localhost, or Localhost/home. Before we break the code down make it look like this
 >
 > ```csharp
 >@{
@@ -116,7 +120,7 @@ Were going to make the website look like this in the next section.
 >Now that we better uderstand the changes weve made lets view them by pressing Ctrl+Shift+B to build our project and the refresh in our web browzer.
 > If you see the image below then congragulations you now know the basics of editing Views in MVC. 
 >
-> ![alt text][img10]
+> ![alt text][img11]
 >
 
 
@@ -130,4 +134,5 @@ Were going to make the website look like this in the next section.
 [img7]: img/Step6.png
 [img8]: img/Step7.png
 [img9]: img/Step8.png
-[img10]: img/Step10.png
+[img10]: img/Step9.png
+[img11]: img/Step10.png
