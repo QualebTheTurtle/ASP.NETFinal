@@ -161,7 +161,11 @@ Next were going to Work with Models and controllers to change the register page 
 > 
 > ![alt text][img15]
 >
-> Next we need to edit the RegisterViewModel. This model has logic for any information that the user may send in a request from that view. Edit the RegisterViewModel class to look like below
+> Next we need to edit the RegisterViewModel. This model has logic for any information that the user may send in a request from from that view. To get to the RegisterVeiwModel navigate to Models, AccountViewModel, RegisterViewModel.
+> 
+> ![alt text][img16]
+> 
+> Edit the RegisterViewModel class to look like below
 >
 > ```csharp
 >     public class RegisterViewModel
@@ -195,7 +199,8 @@ Next were going to Work with Models and controllers to change the register page 
 >         public string ConfirmPassword { get; set; }
 >     }
 >```
->
+> 
+> Now that weve edited the Model side of MVC we need to edit the Controler. To edit the controler for Register page we need to find the Register method that takes a parameter of a register view.
 > 
 
 
@@ -214,3 +219,4 @@ Next were going to Work with Models and controllers to change the register page 
 [img13]: img/Step12.png
 [img14]: img/Step13.png
 [img15]: img/Step14.png
+[img16]: img/Step15.png
