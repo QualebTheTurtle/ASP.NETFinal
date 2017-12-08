@@ -200,9 +200,52 @@ Next were going to Work with Models and controllers to change the register page 
 >     }
 >```
 > 
-> Now that weve edited the Model side of MVC we need to edit the Controler. To edit the controler for Register page we need to find the Register method that takes a parameter of a register view.
+> Now that weve edited the Model side of MVC we need to edit the Controler. To edit the controler for Register page we need to find the Register method that takes a parameter of a register view. To do this in Solution Explorer we can click Controllers, AccountController.cs, AccountController, Register(RegisterViewModel) like below
+>
+> ![alt text][img17]
 > 
-
+> Edit the line variable user line to look like below
+> `var user = new ApplicationUser { UserName = model.Username, Email = model.Email, fName = model.FirstName, lName = model.LastName };`
+>
+> Next we need to change the view model for Register to have 3 new items for Username, first name , and last name. Find the Register.cshtml using Solution Explorer and locate the div with the class form-group, copy it till the end div for that class it should be as much as below.
+> ```csharp
+>  <div class="form-group">
+>        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+>        <div class="col-md-10">
+>            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+>        </div>
+>    </div>
+> ```
+>
+> Paste the copied code above the first div form-group and edit it anywhere it says _m.Email_ to say _m.FirstName_. Paste 2 more blocks below the end div tag for the pasted block. Edit one to say m.LastName and the other to say m.Username. The additions above the first div form-group should appear as below
+> ```csharp
+>    <div class="form-group">
+>       @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 control-label" })
+>        <div class="col-md-10">
+>            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+>        </div>
+>    </div>    
+>    <div class="form-group">
+>        @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 control-label" })
+>        <div class="col-md-10">
+>            @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+>        </div>
+>    </div>    
+>    <div class="form-group">
+>        @Html.LabelFor(m => m.Username, new { @class = "col-md-2 control-label" })
+>        <div class="col-md-10">
+>            @Html.TextBoxFor(m => m.Username, new { @class = "form-control" })
+>        </div>
+>    </div>
+> ```
+> The code you have copied is razor combinded with bootstrap to create a label control and a textbox coresponding to the label.
+> At this point you can buld your code and navigate to the register page and create a new account as below
+> 
+> ![alt text][img18]
+>
+> Note once youve created a new account it redirects to the home page and your username is diaplayed in the top right.
+>> #### We Broke the Login Page
+>> Notice that if you logout and attempt to log back in you get an invalid login attempt with the correct information. This is due to the fact that we used the existing username field in the data base, and that is what the login autenticates off of.
 
 [img1]: img/MVCDiagram.jpg "Tutorial img 1 shows a visual helpper of MVC. Created by Caleb Wagner using Microsoft Visio."
 [img2]: img/Step1.png "Tutorial img 2 shows a visual of above text. Created by Caleb Wagner."
@@ -220,3 +263,4 @@ Next were going to Work with Models and controllers to change the register page 
 [img14]: img/Step13.png
 [img15]: img/Step14.png
 [img16]: img/Step15.png
+[img17]: img/Step16.png
