@@ -123,6 +123,80 @@ Were going to make the website look like this in the next section.
 > ![alt text][img11]
 >
 
+Next were going to Work with Models and controllers to change the register page slightly.
+
+### Changing the Registers Page
+> First were going to add a database to the project. There are many ways to do this, in MVC its easiest to create an account using the registers page. You will know you have a successful registar when it redirects you to the home page and you can see your email and logout in the top right.
+> 
+> ![alt text][img12]
+> 
+> Once Created in visual studio in the App_Data Folder there should be a database file(red circle). To see this file you may have to press the view all files button(blue circle).
+>
+> ![alt text][img13]
+>
+> You will need to then open the package manager console and type "Enable-Migrations" and press enter.
+>
+> ![alt text][img14]
+>
+> Next we need to edit the identity model. Open the Models, IdentityModels.cs. Scroll down until you see the ApplicationUser class and add these properties to it.
+> ```csharp
+> public class ApplicationUser : IdentityUser
+>    {
+>         public string fName { get; set; }
+>         public string lName { get; set; }   
+>
+>         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
+>         {
+>             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
+>             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
+>            // Add custom user claims here
+>             return userIdentity;
+>         }
+>     }
+> ```
+> Next go back to the Console and type "Add-Migration "fName"" hit enter.
+> Then type "Update-Database" hit enter.
+> Repeat the last two steps replaceing fname in step 1 with lname.
+> Finaly you have added first name and last name to the database to check double click the database file. In the Server Explorer window, select the tables dropdown then AspNetUsers and notice the fName and lName near the bottom.
+> 
+> ![alt text][img15]
+>
+> Next we need to edit the RegisterViewModel. This model has logic for any information that the user may send in a request from that view. Edit the RegisterViewModel class to look like below
+>
+> ```csharp
+>     public class RegisterViewModel
+>     {
+>         [Required]
+>         [Display(Name = "Username")]
+>         public string Username { get; set; }
+> 
+>         [Required]
+>         [Display(Name = "First Name")]
+>         public string FirstName { get; set; }
+> 
+>         [Required]
+>         [Display(Name = "Last Name")]
+>         public string LastName { get; set; }
+>
+>         [Required]
+>         [EmailAddress]
+>         [Display(Name = "Email")]
+>         public string Email { get; set; }
+>
+>         [Required]
+>         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+>         [DataType(DataType.Password)]
+>         [Display(Name = "Password")]
+>        public string Password { get; set; }
+>
+>         [DataType(DataType.Password)]
+>         [Display(Name = "Confirm password")]
+>         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+>         public string ConfirmPassword { get; set; }
+>     }
+>```
+>
+> 
 
 
 [img1]: img/MVCDiagram.jpg "Tutorial img 1 shows a visual helpper of MVC. Created by Caleb Wagner using Microsoft Visio."
@@ -136,3 +210,7 @@ Were going to make the website look like this in the next section.
 [img9]: img/Step8.png
 [img10]: img/Step9.png
 [img11]: img/Step10.png
+[img12]: img/Step11.png
+[img13]: img/Step12.png
+[img14]: img/Step13.png
+[img15]: img/Step14.png
