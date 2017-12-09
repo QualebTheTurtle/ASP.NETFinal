@@ -2,6 +2,9 @@
 
 ## Intro to MVC
 
+### Overview
+> In this lab We will go over what MVC is and create a website about dogs. This site includes features such as login and authentication, and even pages that only appear upon login. All of which can be easily maintained and reused through the awsomeness of MVC. 
+
 ### What is MVC????
 > MVC stands for Model View Controler. It is an archetectural pattern, or a way to logically organize and structure programs. MVC is not a framework, however it is commonly used by many frameworks such as Ruby on Rails and django. With MVC your program is orgamized in such a way that the Model is anything pertaining to the data of your program, being properties and databases. Views are anything pertaining to the "stuff" put out to the users screen. Finally Controller is for anything pertaining to processing information from user gathering info from the Model and View to create the final view and output to the user.
 >#### MVC With ASP.NET And Web Development
@@ -244,8 +247,220 @@ Next were going to Work with Models and controllers to change the register page 
 > ![alt text][img18]
 >
 > Note once youve created a new account it redirects to the home page and your username is diaplayed in the top right.
+>
 >> #### We Broke the Login Page
 >> Notice that if you logout and attempt to log back in you get an invalid login attempt with the correct information. This is due to the fact that we used the existing username field in the data base, and that is what the login autenticates off of.
+>> To fix this need to edit the account controler for login, in Solution Explorer navigate to Controllers, AccountController.cs, AccountController, Login(LoginViewModel, string) and make the code look like this 
+>> ```csharp
+>>        // POST: /Account/Login
+>>        [HttpPost]
+>>        [AllowAnonymous]
+>>        [ValidateAntiForgeryToken]
+>>        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+>>        {
+>>            if (!ModelState.IsValid)
+>>            {
+>>                return View(model);
+>>            }
+>>
+>>
+>>            var db = new ApplicationDbContext();
+>>
+>>
+>>            try
+>>            {
+>>                var user = db.Users.Where(u => u.Email.Equals(model.Email)).Single(); // where db is ApplicationDbContext instance
+>>
+>>                var result = await SignInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, shouldLockout: false);
+>>                // This doesn't count login failures towards account lockout
+>>                // To enable password failures to trigger account lockout, change to shouldLockout: true
+>>                //var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+>>                switch (result)
+>>                {
+>>                    case SignInStatus.Success:
+>>                        return RedirectToLocal(returnUrl);
+>>                    case SignInStatus.LockedOut:
+>>                        return View("Lockout");
+>>                    case SignInStatus.RequiresVerification:
+>>                        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+>>                    case SignInStatus.Failure:
+>>                    default:
+>>                        ModelState.AddModelError("", "Invalid login attempt.");
+>>                        return View(model);
+>>                }
+>>            }
+>>            catch (InvalidOperationException)
+>>            {
+>>                // the user is not exist
+>>                ModelState.AddModelError("", "Invalid login attempt.");
+>>                return View(model);
+>>            }
+>>
+>>        }
+>> ```
+>> To fix this issue we had to compare the users entry which is m.Email to the email in the database. We used the .users.where operaters to do this. This is not the best approach for doing this, however it works and the bug is fixed for now. 
+Next we will create a partial view to further modularize our shared files.
+### Creating a Navigation Partial View
+> Right click on views and select add and view. The add view window appears in viewname type "\_Navigation". Propernaming convention for partial views is to prefix the partial view with an underscore. Checkmark the box that says partial view, then varify your window looks like the image below and select ok.
+>
+> ![alt text][img17]
+>
+> This creates a \_Navigation.cshtml next were going to open the \_layout.cshtml and cut the out the navigation. Select from the `<div class="navbar navbar-inverse navbar-fixed-top">` to its matching div, and pres Ctrl+X. Before pasting these in the area that you just cut from, type this line of code `@Html.Partial("_Navigation")` This is the code that will call the navigation partial view. Finaly paste the coppied material in the \_Navigation.cshtml file. From now on any time you want to make a change to your normal navigation bar you would go to \_Navigation. 
+### Creating Pages That Display Only When Logged In
+>First we need to create a controler to control the routing for out view. To do this right click Controllers select add and new Controller
+>
+> ![alt text][img18]
+>
+>Then select the first option from the add Scafolding window. This creates an empty conroller for us to work with.
+>
+> ![alt text][img19]
+>
+> Name the Controller DogzController like below
+>
+> ![alt text][img20]
+>
+> Next edit the file to make it look like below
+>```csharp
+>using System;
+>using System.Collections.Generic;
+>using System.Linq;
+>using System.Web;
+>using System.Web.Mvc;
+>
+>namespace DogzRRuff.Controllers
+>{
+>    public class DogzController : Controller
+>    {
+>        [Authorize]
+>        // GET: Dogz/Rusty
+>        public ActionResult Rusty()
+>        {
+>            return View();
+>        }
+>    }
+>}
+> ```
+> The `[Authorize]` statement makes it so the page accessed can only be viewed by logged in persons and redirects to the login page if not. `Action Result Rusty()` Creates the estention of the url that will be used in this case its Dogz/Rusty. This is from Dogz the name before Controller, and Rusty the name of the action result function. This functon returns the View() fuction. The View function searches for a folder in Views named Dogs and finds a cshtml file whos name matches the name of the action result function(Rusty), and creates a view from it.
+>Next we must create the view for our controller to find in the Dogz folder. Notice in the Solution Explorer that a Dogz folder has already been created. this was created when we made the controller. Right click the Dogz folder and add a view (not a partial view) name it Rusty. Also create an images folder in your project and add a picture of a dog to it. Your code should look like this inside of the newly created view. <span>Note:<sub> `<img src"Your image link here"/>`</sub></span>
+> ```csharp
+>
+>@{
+>    ViewBag.Title = "Rusty";
+>}
+>
+><h2>My First Puppy</h2>
+><h3>Rusty</h3>
+><img src="~/Images/Rusty 2 300res.jpg" class="img-responsive center-block" />
+><br /> 
+><p>Rusty was my family dog from as far back as I can remember. He came into my family when I was in the 4th grade(2005/2006). He was always happy and super excited to see me and my faimily. Unfortinately he passed October 2017. He will be forever loved and for ever missed. Rest well Rusty.</p>
+>```
+> From this point you should be able to build and refresh. To get to this page however you will need to type after localhost in the searchbar "/Dogz/rusty". Test both logged in and out. Next we will edit the nav bar to include a link to our page when were logged in.
+####Editing the nav bar
+>First we need to open the \_LoginPartial.cshtml from Views, Shared. This partial view is the view that determines the content to display in the nav if a user is logedd in. Notice the partial view is an if statement that IfAuthenticated where it returns true if a person is logged in. Change the code underneith the if to say
+>```csharp
+>    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+>    {
+>    @Html.AntiForgeryToken()
+>
+>    <ul class="nav navbar-nav navbar-right">
+>        <li class="dropdown">
+>                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dogz
+>                <span class="caret"></span>
+>            </a>
+>            <ul class="dropdown-menu">
+>                <li><a href="#">@Html.ActionLink("Rusty", "Rusty", "Dogz")</a></li>
+>            </ul>
+>        </li>
+>        <li>
+>            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+ >       </li>
+ >       <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+ >   </ul>
+ >   }
+ > ```
+ > In this weve chaged the ul for the right side of the navigation bar to have another li. Using boot strap we have created a dropdown so if we wanted to add another dog we could easily add it to the dropdown-menu li. Build and refresh the page. Congragulations! You understand the basics of MVC in ASP.NET. Pat yourself on the back this is no small task at all. Please take it one step further and try it yourself. Refrain from veiwing the ansewer. 
+ 
+ ### Do It Yourself
+ > Add another Authenticated function to our controler to navigate the user to Dogz/Delilah. Then create a partial view similar to the one created for Rusty, call it Delilah. Finaly add a @Html.action to the dropdown-menu for Dogz in the \_LoginPartial file to give the user a link to navigate to your page. Build and refresh to check your work. Don't cheat!!!!
+ 
+ ## Warning The following Is The Answer
+ Controller
+ ```csharp
+ using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace DogzRRuff.Controllers
+{
+    public class DogzController : Controller
+    {
+        [Authorize]
+        // GET: Dogz/Rusty
+        public ActionResult Rusty()
+        {
+            return View();
+        }
+
+        [Authorize]
+        // GET: Dogz/Delilah
+        public ActionResult Delilah()
+        {
+            return View();
+        }
+    }
+}
+ ```
+ View
+ ```csharp
+ 
+@{
+    ViewBag.Title = "Delilah";
+}
+
+<h2>My Other Puppy</h2>
+<h3>Delilah</h3>
+<img src="~/Images/7427.jpeg" class="img-responsive center-block" />
+<br />
+<p>Delilah was a young pup when my girl friend got her in summer 2015. She is now a helathy, happy, hyper puppy and helps to fill the hole that rusty left in his passing.</p>
+
+
+ ```
+ Navigation
+ ```csharp
+@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    @Html.AntiForgeryToken()
+
+    <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dogz
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="#">@Html.ActionLink("Rusty", "Rusty", "Dogz")</a></li>
+                <li><a href="#">@Html.ActionLink("Delilah", "Delilah", "Dogz")</a></li>
+            </ul>
+        </li>
+        <li>
+            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+        </li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+    </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}
+ ```
 
 [img1]: img/MVCDiagram.jpg "Tutorial img 1 shows a visual helpper of MVC. Created by Caleb Wagner using Microsoft Visio."
 [img2]: img/Step1.png "Tutorial img 2 shows a visual of above text. Created by Caleb Wagner."
@@ -253,14 +468,17 @@ Next were going to Work with Models and controllers to change the register page 
 [img4]: img/Step3.png "Tutorial img 4 shows a visual of above text. Created by Caleb Wagner."
 [img5]: img/Step4.png "Tutorial img 5 shows a visual of above text. Created by Caleb Wagner."
 [img6]: img/Step5.png "Tutorial img 6 shows a visual of above text. Created by Caleb Wagner."
-[img7]: img/Step6.png
-[img8]: img/Step7.png
-[img9]: img/Step8.png
-[img10]: img/Step9.png
-[img11]: img/Step10.png
-[img12]: img/Step11.png
-[img13]: img/Step12.png
-[img14]: img/Step13.png
-[img15]: img/Step14.png
-[img16]: img/Step15.png
-[img17]: img/Step16.png
+[img7]: img/Step6.png "Tutorial img 7 shows a visual of above text. Created by Caleb Wagner."
+[img8]: img/Step7.png "Tutorial img 8 shows a visual of above text. Created by Caleb Wagner."
+[img9]: img/Step8.png "Tutorial img 9 shows a visual of above text. Created by Caleb Wagner."
+[img10]: img/Step9.png "Tutorial img 10 shows a visual of above text. Created by Caleb Wagner."
+[img11]: img/Step10.png "Tutorial img 11 shows a visual of above text. Created by Caleb Wagner."
+[img12]: img/Step11.png "Tutorial img 12 shows a visual of above text. Created by Caleb Wagner."
+[img13]: img/Step12.png "Tutorial img 13 shows a visual of above text. Created by Caleb Wagner."
+[img14]: img/Step13.png "Tutorial img 14 shows a visual of above text. Created by Caleb Wagner."
+[img15]: img/Step14.png "Tutorial img 15 shows a visual of above text. Created by Caleb Wagner."
+[img16]: img/Step15.png "Tutorial img 16 shows a visual of above text. Created by Caleb Wagner."
+[img17]: img/Step16.png "Tutorial img 17 shows a visual of above text. Created by Caleb Wagner."
+[img18]: img/Step17.png "Tutorial img 18 shows a visual of above text. Created by Caleb Wagner."
+[img19]: img/Step18.png "Tutorial img 19 shows a visual of above text. Created by Caleb Wagner."
+[img20]: img/Step19.png "Tutorial img 20 shows a visual of above text. Created by Caleb Wagner."
