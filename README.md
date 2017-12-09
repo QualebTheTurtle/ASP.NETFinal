@@ -3,11 +3,15 @@
 ## Intro to MVC
 
 ### Overview
+
 > In this lab We will go over what MVC is and create a website about dogs. This site includes features such as login and authentication, and even pages that only appear upon login. All of which can be easily maintained and reused through the awesomeness of MVC. 
 
 ### What is MVC????
+
 > MVC stands for Model View Controler. It is an archetectural pattern, or a way to logically organize and structure programs. MVC is not a framework, however it is commonly used by many frameworks such as Ruby on Rails and Django. With MVC your program is organized in such a way that the Model is anything pertaining to the data of your program, being properties and databases. Views are anything pertaining to the "stuff" put out to the users screen. Finally Controller is for anything pertaining to processing information from user gathering info from the Model and View to create the final view and output to the user.
+
 ### MVC With ASP.NET And Web Development
+
 >MVC can be related to the client server model in Web development. The user (you at your house) makes a request to a server, that server then requests information to a dataserver. The data server sends the requested information back and the server compiles a veiw to send to the user.
 > 
 >![alt text][img1]
@@ -15,6 +19,7 @@
 >The senario above Is the same model with MVC applied where the user makes a request. The server controls the request, and gathers information from the model. The server then generates a view and reterns it to the user.
 
 ### Lets Get to It
+
 Now that you understand the basics of MVC lets try to enforce MVC by creating an ASP.net web application using MVC. Were going to recreate the dog lab from earlier in the semester, but using MVC. To start open up Visual Studio and click file new Project, or press Ctrl+Shift+N.
 
 ![alt text][img2]
@@ -52,13 +57,17 @@ MVC in Visual studio comes with alot of pre-built view's. Including login featur
 > ```
 > 
 > Once edited hit Ctrl+Shift+B to rebuild the solution. Go to your web browser and refresh. From here we will change the words in our title and footer to reflect our new application name. Change lines 6 to
+>
 > ```csharp
 > <title>@ViewBag.Title - DogzRRuff</title>
 > ```
+>
 > and 36 to
+>
 > ```csharp
 > <p>&copy; @DateTime.Now.Year - DogzRRuff</p>
 > ```
+>
 > The website sould have the following changes after a build(Ctrl+Shift+B) and a refresh of your browser.
 > 
 > ![alt text][img9]
@@ -69,16 +78,20 @@ Were going to make the website look like this in the next section.
 ![alt text][img11]
 
 ### Changing the Home Page Content in MVC
+
 > In MVC a view is created from a multitude of veiws or partial views. The view we edited previously is a partial view that all pages of the website share unless otherwize specified. Lets break that view down to better understand before we move on. At the top of the view there are normal HTML tags, going on we see an @ symbol. The @ denotes the usage of csharp. The first instance of an @ symbol that we see is on line 6
 >
 > ```csharp
 >     <title>@ViewBag.Title - DogzRRuff</title>
 > ```
+>
 > This line is an html title tag the csharp code after the @ symbol is ViewBag.Title this code creates a temporary variable called title that can be passed values from the partial view that is put in further down.
 > The next line of intrest is line 33
+>
 > ```csharp
 > @RenderBody()
 > ```
+>
 > RenderBody function is a helper function that is implemented in MVC it is where the partial veiws to be passed in will be placed. Now that we understand the Shared partial veiw lets edit the body of the HomePage. To do this navigate to Views, Home, and opent the Index.cshtml file. 
 > 
 > ![alt text][img10]
@@ -127,6 +140,7 @@ Were going to make the website look like this in the next section.
 Next were going to work with Models and controllers to change the register page slightly.
 
 ### Changing the Registers Page
+
 > First were going to add a database to the project. There are many ways to do this, in MVC its easiest to create an account using the registers page. You will know you have a successful register when it redirects you to the home page and you can see your email and logout in the top right.
 > 
 > ![alt text][img12]
@@ -140,6 +154,7 @@ Next were going to work with Models and controllers to change the register page 
 > ![alt text][img14]
 >
 > Next we need to edit the identity model. Open the Models, IdentityModels.cs. Scroll down until you see the ApplicationUser class and add these properties to it.
+>
 > ```csharp
 > public class ApplicationUser : IdentityUser
 >    {
@@ -155,6 +170,7 @@ Next were going to work with Models and controllers to change the register page 
 >         }
 >     }
 > ```
+>
 > Next go back to the Console and type "Add-Migration "fName"" hit enter.
 >
 > Then type "Update-Database" hit enter.
@@ -209,6 +225,7 @@ Next were going to work with Models and controllers to change the register page 
 > `var user = new ApplicationUser { UserName = model.Username, Email = model.Email, fName = model.FirstName, lName = model.LastName };`
 >
 > Next we need to change the view model for Register to have 3 new items for username, first name , and last name. Find the Register.cshtml using Solution Explorer and locate the div with the class form-group, copy it until the end div for that class it should be as much as below.
+>
 > ```csharp
 >  <div class="form-group">
 >        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
@@ -219,6 +236,7 @@ Next were going to work with Models and controllers to change the register page 
 > ```
 >
 > Paste the copied code above the first div form-group and edit it anywhere it says _m.Email_ to say _m.FirstName_. Paste 2 more blocks below the end div tag for the pasted block. Edit one to say m.LastName and the other to say m.Username. The additions above the first div form-group should appear as below
+>
 > ```csharp
 >    <div class="form-group">
 >       @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 control-label" })
@@ -239,11 +257,13 @@ Next were going to work with Models and controllers to change the register page 
 >        </div>
 >    </div>
 > ```
+>
 > The code you have copied is razor with bootstrap to create a label control and a textbox coresponding to the label.
 > At this point you can build your code and navigate to the register page and create a new account. Then try logging out and back in. Note once you've created a new account it redirects to the home page and your username is displayed in the top right.
 >
 >> #### We Broke the Login Page
 >> Notice that if you logout and attempt to log back in you get an invalid login attempt with the correct information. This is due to the fact that we used the existing username field in the data base, and that is what the login authenticates off of. To fix this need to edit the account controler for login, in Solution Explorer navigate to Controllers, AccountController.cs, AccountController, Login(LoginViewModel, string) and make the code look like this 
+>>
 >> ```csharp
 >>        // POST: /Account/Login
 >>        [HttpPost]
@@ -291,9 +311,11 @@ Next were going to work with Models and controllers to change the register page 
 >>
 >>        }
 >> ```
+>>
 >> To fix this issue we had to compare the users entry which is m.Email to the email in the database. We used the .users.where operators to do this. This is not the best approach for doing this, however it works and the bug is fixed for now. Next we will create a partial view to further modularize our shared files.
 
 ### Creating a Navigation Partial View
+
 > Right click on views and select add and view. The add view window appears in viewname type "\_Navigation". Propernaming convention for partial views is to prefix the partial view with an underscore. Checkmark the box that says partial view, then verify your window looks like the image below and select ok.
 >
 > ![alt text][img17]
@@ -301,6 +323,7 @@ Next were going to work with Models and controllers to change the register page 
 > This creates a \_Navigation.cshtml next were going to open the \_layout.cshtml and cut the out the navigation. Select from the `<div class="navbar navbar-inverse navbar-fixed-top">` to its matching /div, and pres Ctrl+X. Before pasting these, in the area that you just cut from, type this line of code `@Html.Partial("_Navigation")` This is the code that will call the navigation partial view. Finaly paste the coppied material in the \_Navigation.cshtml file. From now on any time you want to make a change to your normal navigation bar you would go to \_Navigation.
 
 ### Creating Pages That Display Only When Logged In
+
 >First we need to create a controler to control the routing for our view. To do this right click Controllers select add and new Controller.
 >
 > ![alt text][img18]
@@ -314,6 +337,7 @@ Next were going to work with Models and controllers to change the register page 
 > ![alt text][img20]
 >
 > Next edit the file to make it look like below
+>
 >```csharp
 >using System;
 >using System.Collections.Generic;
@@ -334,9 +358,11 @@ Next were going to work with Models and controllers to change the register page 
 >    }
 >}
 > ```
+>
 > The `[Authorize]` statement makes it so the page accessed can only be viewed by logged in persons and redirects to the login page if not. `Action Result Rusty()` Creates the estention of the url that will be used in this case its Dogz/Rusty. This is from Dogz the name before Controller, and Rusty the name of the action result function. This functon returns the View() fuction. The View function searches for a folder in Views named Dogz and finds a cshtml file whos name matches the name of the action result function(Rusty), and creates a view from it.
 >
 > Next we must create the view for our controller to find in the Dogz folder. Notice in the Solution Explorer that a Dogz folder has already been created. this was created when we made the controller. Right click the Dogz folder and add a view (not a partial view) name it Rusty. Also create an images folder in your project and add a picture of a dog to it. Your code should look like this inside of the newly created view. <span>Note:<sub> `<img src"Your image link here"/>`</sub></span>
+>
 > ```csharp
 > 
 > @{
@@ -349,10 +375,12 @@ Next were going to work with Models and controllers to change the register page 
 > <br /> 
 > <p>Rusty was my family dog from as far back as I can remember. He came into my family when I was in the 4th grade(2005/2006). He was always happy and super excited to see me and my faimily. Unfortinately he passed October 2017. He will be forever loved and for ever missed. Rest well Rusty.</p>
 > ```
+>
 > From this point you should be able to build and refresh. To get to this page however you will need to type after localhost in the searchbar "/Dogz/rusty". Test both logged in and out. Next we will edit the nav bar to include a link to our page when we're logged in.
 
 ### Editing the nav bar
 >First we need to open the \_LoginPartial.cshtml from Views, Shared. This partial view is the view that determines the content to display in the nav if a user is logedd in. Notice the partial view is an if statement that IfAuthenticated where it returns true if a person is logged in. Change the code underneath the if to say
+>
 > ```csharp
 >    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
 >    {
@@ -374,13 +402,17 @@ Next were going to work with Models and controllers to change the register page 
  >   </ul>
  >   }
  > ```
+ >
  > In this we've changed the ul for the right side of the navigation bar to have another li. Using bootstrap we have created a dropdown so if we wanted to add another dog we could easily add it to the dropdown-menu li. Build and refresh the page. Congragulations! You understand the basics of MVC in ASP.NET. Pat yourself on the back this is no small task at all. Please take it one step further and try it yourself. Refrain from viewing the answer. 
  
  ### Do It Yourself
+ 
  > Add another authenticated function to our controller to navigate the user to Dogz/Delilah. Then create a partial view similar to the one created for Rusty, call it Delilah. Finaly add a @Html.action to the dropdown-menu for Dogz in the \_LoginPartial file to give the user a link to navigate to your page. Build and refresh to check your work. Don't cheat!!!!
  
  ## Warning The Following Is The Answer
- Controller
+ 
+Controller
+
  ```csharp
  using System;
 using System.Collections.Generic;
@@ -407,9 +439,11 @@ namespace DogzRRuff.Controllers
         }
     }
 }
- ```
- View
- ```csharp
+```
+ 
+View
+ 
+```csharp
  
 @{
     ViewBag.Title = "Delilah";
@@ -423,40 +457,42 @@ namespace DogzRRuff.Controllers
 
 
  ```
- Navigation
- ```csharp
-@using Microsoft.AspNet.Identity
-@if (Request.IsAuthenticated)
-{
-    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
-    {
-    @Html.AntiForgeryToken()
+ 
+Navigation
 
-    <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dogz
-                <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu">
-                <li><a href="#">@Html.ActionLink("Rusty", "Rusty", "Dogz")</a></li>
-                <li><a href="#">@Html.ActionLink("Delilah", "Delilah", "Dogz")</a></li>
-            </ul>
-        </li>
-        <li>
-            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
-        </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-    </ul>
-    }
-}
-else
-{
-    <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-    </ul>
-}
- ```
+```csharp
+ @using Microsoft.AspNet.Identity
+ @if (Request.IsAuthenticated)
+ {
+     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+     {
+     @Html.AntiForgeryToken()
+ 
+     <ul class="nav navbar-nav navbar-right">
+         <li class="dropdown">
+                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dogz
+                 <span class="caret"></span>
+             </a>
+             <ul class="dropdown-menu">
+                 <li><a href="#">@Html.ActionLink("Rusty", "Rusty", "Dogz")</a></li>
+                 <li><a href="#">@Html.ActionLink("Delilah", "Delilah", "Dogz")</a></li>
+             </ul>
+         </li>
+         <li>
+             @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+         </li>
+         <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+     </ul>
+     }
+ }
+ else
+ {
+     <ul class="nav navbar-nav navbar-right">
+         <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink"     })</li>
+         <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+     </ul>
+ }
+```
 
 [img1]: img/MVCDiagram.jpg "Tutorial img 1 shows a visual helpper of MVC. Created by Caleb Wagner using Microsoft Visio."
 [img2]: img/Step1.png "Tutorial img 2 shows a visual of above text. Created by Caleb Wagner."
